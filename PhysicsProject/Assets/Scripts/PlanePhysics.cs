@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class PlanePhysics : MonoBehaviour
 {
+    public Vector3 Normal
+    { 
+        get { return transform.up; }
+        set { transform.up = value; }
+    
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

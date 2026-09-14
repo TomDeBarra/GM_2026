@@ -1,7 +1,13 @@
 using UnityEngine;
 
 public class SpherePhysics : MonoBehaviour
-{   
+{
+    public PlanePhysics thePlane;
+    public float Radius 
+       { get { return transform.localScale.x / 2f; }
+        set { transform.localScale = Vector3.one * value;}
+    }
+
     Vector3 velocity = Vector3.zero;
     Vector3 acceleration = Vector3.zero;
     float CoR = 0.75f;
@@ -25,8 +31,19 @@ public class SpherePhysics : MonoBehaviour
 
         transform.position += velocity * Time.deltaTime;
 
-        if(transform.position.y < 0.05f) // detect collision
+        if (parallel_Distance(transform.position - thePlane.transform.position,
+                             thePlane.Normal) < Radius) // detect collision
+        {
             transform.position -= velocity * Time.deltaTime;
-            velocity = -CoR*velocity;
+            velocity = -CoR * velocity;
+        }
+    }
+
+    // Returns the magnitude of the parallel component of vector v parallel  to n
+    // v = Vector to be decomposed
+    // n = Unit vector parallel to above component
+    float parallel_Distance(Vector3 v, Vector3 n)
+    {
+        return Vector3.Dot(v, n.normalized);
     }
 }
