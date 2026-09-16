@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class SpherePhysics : MonoBehaviour
@@ -25,17 +26,21 @@ public class SpherePhysics : MonoBehaviour
         // v = u + a * t
         // velocity = velocity + acceleration * Time.deltaTime; 
 
-        velocity += acceleration * Time.deltaTime; 
+        velocity += acceleration * Time.deltaTime;
 
         // s = u * t
 
         transform.position += velocity * Time.deltaTime;
 
+        // transform.position += perp_component(velocity, thePlane.Normal) * Time.deltaTime;
+
         if (parallel_Distance(transform.position - thePlane.transform.position,
                              thePlane.Normal) < Radius) // detect collision
         {
-            transform.position -= velocity * Time.deltaTime;
-            velocity = -CoR * velocity;
+            Vector3 parallelComponent = parallel_component(velocity, thePlane.Normal);
+            Vector3 perpendicularComponent = perp_component(velocity, thePlane.Normal);
+            velocity = perpendicularComponent - (parallelComponent * CoR);
+            transform.position -= parallelComponent * Time.deltaTime;
         }
     }
 
@@ -45,5 +50,15 @@ public class SpherePhysics : MonoBehaviour
     float parallel_Distance(Vector3 v, Vector3 n)
     {
         return Vector3.Dot(v, n.normalized);
+    }
+
+    Vector3 parallel_component(Vector3 v, Vector3 n)
+    {
+        return (Vector3.Dot(v, n.normalized) * n.normalized);
+    }
+
+    Vector3 perp_component(Vector3 v, Vector3 n)
+    {
+        return v - parallel_component(v, n);
     }
 }
