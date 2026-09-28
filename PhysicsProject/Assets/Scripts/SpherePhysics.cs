@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class SpherePhysics : MonoBehaviour
 {
     public PlanePhysics thePlane;
+    public SpherePhysics theSphere;
+
     float d0;
     public float Radius 
        { get { return transform.localScale.x / 2f; }
@@ -38,8 +40,13 @@ public class SpherePhysics : MonoBehaviour
 
         transform.position += velocity * Time.deltaTime;
 
+        plane_Collisions(oldVelocity, oldPosition);
+        // colliding with sphere here
+    }
+
+    void plane_Collisions(Vector3 oldVelocity, Vector3 oldPosition)
+    {
         float d1 = parallel_Distance(transform.position - thePlane.transform.position, thePlane.Normal) - Radius;
-        d0 = d1;
 
         if (d1 < 0) // detect collision
         {
@@ -61,7 +68,7 @@ public class SpherePhysics : MonoBehaviour
 
             // Resolve collision
             // vImpactOut = v perp - CoR * v parallel
-            Vector3 vImpactOut = perp_component(velocity, thePlane.Normal) - (CoR * parallel_component(velocity, thePlane.Normal));
+            Vector3 vImpactOut = perp_component(vImpact, thePlane.Normal) - (CoR * parallel_component(vImpact, thePlane.Normal));
 
             // Fast Forward to current frame 
             // T remaining = T - tImpact
@@ -75,34 +82,28 @@ public class SpherePhysics : MonoBehaviour
             velocity = v;
             transform.position = position;
         }
-
-        //d0 = d1;
-
-        //// V drop = d1 - d0 divided by time.deltatime
-
-        //float vDrop = d1 - d0 / Time.deltaTime;
-        //// T impact = -d0 divided by drop
-        //float tImpact = -d0 / vDrop;
-        //// V impact = old velocity + acceleration * T impact
-        //// P impact = P0 + V impact + T impact
-        //Vector3 vImpact = oldVelocity + acceleration * tImpact;
-
-        //Vector3 pImpact = oldPosition + vImpact * tImpact;
-
-        //// Resolve collision
-        //// vImpactOut = v perp - CoR * v parallel
-        //Vector3 vImpactOut = perp_component(velocity, thePlane.Normal) - (CoR * parallel_component(velocity, thePlane.Normal));
-
-        //// Fast Forward to current frame 
-        //// T remaining = T - tImpact
-        //float tRemaining = Time.deltaTime - tImpact;
-
-        //// v = vImpactOut + acceleration * tRemaining (v = vector/velocity?)
-        //Vector3 v = vImpactOut + acceleration * tRemaining;
-        //// P = pImpact + velocity * tRemaining
-        //Vector3 position = pImpact + v * tRemaining;
+        d0 = d1;
     }
 
+    void colliding_with_Sphere(Vector3 oldVelocity, Vector3 oldPosition)
+    {
+
+        // Collision occurs when D < Sum of the two R
+
+        float sumOfRadii = Radius + theSphere.Radius;
+        float distance = Vector3.Distance(transform.position, theSphere.transform.position);
+
+        if (distance < sumOfRadii)
+        {
+            // do somewthing
+        }
+        // float distance = Vector3.Distance (object1.transform.position, object2.transform.position); Taken from online
+
+        // Get Vector3 position of sphere 1 and 2
+        // If Distance between P0 and P1 < sum of the two Radii
+        // d < R = r
+
+    }
     // Returns the magnitude of the parallel component of vector v parallel  to n
     // v = Vector to be decomposed
     // n = Unit vector parallel to above component
@@ -110,12 +111,10 @@ public class SpherePhysics : MonoBehaviour
     {
         return Vector3.Dot(v, n.normalized);
     }
-
     Vector3 parallel_component(Vector3 v, Vector3 n)
     {
         return (Vector3.Dot(v, n.normalized) * n.normalized);
     }
-
     Vector3 perp_component(Vector3 v, Vector3 n)
     {
         return v - parallel_component(v, n);
