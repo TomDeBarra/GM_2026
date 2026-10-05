@@ -1,11 +1,9 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public interface ICollidable
 {
-    
-    bool CollidingWith(ICollidable c)
-    {
-        return false;
-        // Write it to actually work for assignment
-    }
+    bool CollidingWith(ICollidable c);
+
+
 }
