@@ -8,8 +8,23 @@ using UnityEngine;
 // Perhaps create a game of just 10 spheres
 public class PhysicsManager : MonoBehaviour
 {
+    public static PhysicsManager Instance; // Optional Singleton for easy access NEW
     List<ICollidable> allCollidables;
 
+    void Awake()
+    {
+        Instance = this;
+    }
+    // NEW
+
+    public void Register(ICollidable collidable)
+    {
+        if (!allCollidables.Contains(collidable))
+        {
+            allCollidables.Add(collidable);
+        }
+    }
+    //NEW
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -34,12 +49,12 @@ public class PhysicsManager : MonoBehaviour
 
         for (int i = 0; i < allCollidables.Count; i++)
         {
-            for (int j = 0; j < allCollidables.Count; j++)
+            for (int j = i+1; j < allCollidables.Count; j++)
             {
                 if (allCollidables[i].collidingWith(allCollidables[j]))
                 {
-                    Vector3 newPosition = Vector3.zero, newVelocity = Vector3.zero;
-                    allCollidables[i].resolve(allCollidables[j], ref newPosition, ref newVelocity);
+                    // Vector3 newPosition = Vector3.zero, newVelocity = Vector3.zero;
+                    allCollidables[i].resolve(allCollidables[j]/*, ref newPosition, ref newVelocity*/);
                     //if (allCollidables[i] is SpherePhysics && allCollidables[j] is SpherePhysics)
                     //{
                     //    // sphere_Collisions();
@@ -60,32 +75,32 @@ public class PhysicsManager : MonoBehaviour
     }
 
     // This is taken from 
-    void plane_Collisions(PlanePhysics thePlane, SpherePhysics theSphere)
-    {
-        float d1 = parallel_Distance(transform.position - thePlane.transform.position, thePlane.Normal) - theSphere.Radius;
+    //void plane_Collisions(PlanePhysics thePlane, SpherePhysics theSphere)
+    //{
+    //    float d1 = parallel_Distance(transform.position - thePlane.transform.position, thePlane.Normal) - theSphere.Radius;
 
-        if (d1 < 0)
-        {
-            Vector3 parallelComponent = parallel_component(theSphere.getVelocity(), thePlane.Normal);
-            Vector3 perpendicularComponent = perp_component(theSphere.getVelocity(), thePlane.Normal);
+    //    if (d1 < 0)
+    //    {
+    //        Vector3 parallelComponent = parallel_component(theSphere.getVelocity(), thePlane.Normal);
+    //        Vector3 perpendicularComponent = perp_component(theSphere.getVelocity(), thePlane.Normal);
 
-            float vDrop = d1 - theSphere.getd0() / Time.deltaTime;
-            float tImpact = -theSphere.getd0() / vDrop;
+    //        float vDrop = d1 - theSphere.getd0() / Time.deltaTime;
+    //        float tImpact = -theSphere.getd0() / vDrop;
 
-            Vector3 vImpact = theSphere.getOldVelocity() + theSphere.getAcceleration() * tImpact;
-            Vector3 pImpact = theSphere.getOldPosition() + vImpact * tImpact;
-            Vector3 vImpactOut = perp_component(vImpact, thePlane.Normal) - (theSphere.getCoR() * parallel_component(vImpact, thePlane.Normal));
+    //        Vector3 vImpact = theSphere.getOldVelocity() + theSphere.getAcceleration() * tImpact;
+    //        Vector3 pImpact = theSphere.getOldPosition() + vImpact * tImpact;
+    //        Vector3 vImpactOut = perp_component(vImpact, thePlane.Normal) - (theSphere.getCoR() * parallel_component(vImpact, thePlane.Normal));
 
-            float tRemaining = Time.deltaTime - tImpact;
+    //        float tRemaining = Time.deltaTime - tImpact;
 
-            Vector3 v = vImpactOut + theSphere.getAcceleration() * tRemaining; // v is velocity
-            Vector3 position = pImpact + v * tRemaining;
+    //        Vector3 v = vImpactOut + theSphere.getAcceleration() * tRemaining; // v is velocity
+    //        Vector3 position = pImpact + v * tRemaining;
 
-            theSphere.setVelocity(v);
-            transform.position = position;
-        }
-        theSphere.setd0(d1);
-    }
+    //        theSphere.setVelocity(v);
+    //        transform.position = position;
+    //    }
+    //    theSphere.setd0(d1);
+    //}
 
     public static float parallel_Distance(Vector3 v, Vector3 n)
     {
