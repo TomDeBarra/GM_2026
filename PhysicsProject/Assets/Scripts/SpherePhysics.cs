@@ -29,8 +29,6 @@ public class SpherePhysics : MonoBehaviour, ICollidable
 
     bool collidingWith(ICollidable c)
     {
-        // Simply detect IF it is a plane or sphere and IF it is colliding, physics calculations will be handled in PhysicsManagers this is purely detection
-        // Check if 'c' is an instance of PlanePhysics or SpherePhysics
         if (c is PlanePhysics plane)
         {
             float d1 = parallel_Distance(transform.position - plane.transform.position, plane.Normal) - Radius;
@@ -56,110 +54,19 @@ public class SpherePhysics : MonoBehaviour, ICollidable
         print(transform.position);
     }
 
-    // Update is called once per frame
     void Update()
     {
         acceleration = new Vector3(0, -9.81f, 0);
-        // v = u + a * t
-        // velocity = velocity + acceleration * Time.deltaTime; 
 
         oldVelocity = velocity;
         oldPosition = transform.position;
 
         velocity += acceleration * Time.deltaTime;
 
-        // s = u * t
-
         transform.position += velocity * Time.deltaTime;
 
-        //plane_Collisions(oldVelocity, oldPosition);
-        //sphere_Collisions(oldVelocity,oldPosition);
     }
 
-    //void plane_Collisions(Vector3 oldVelocity, Vector3 oldPosition)
-    //{
-    //    float d1 = parallel_Distance(transform.position - thePlane.transform.position, thePlane.Normal) - Radius;
-
-    //    if (d1 < 0)
-    //    {
-
-    //    }
-    //    d0 = d1;
-    //}
-
-    //void sphere_Collisions(Vector3 oldVelocity, Vector3 oldPosition)
-    //{
-    //    float sumOfRadii = Radius + theSphere.Radius;
-    //    float d1 = Vector3.Distance(transform.position, theSphere.transform.position);
-
-    //    if (d1 < sumOfRadii)
-    //    {
-    //        float distanceAtToI = d1 - d0sphere;
-    //        float vMovement = d1 - d0sphere / Time.deltaTime; //movement between the two frames
-    //        float tImpact = -d0sphere / vMovement;
-
-    //        Vector3 vImpact = oldVelocity + acceleration * tImpact;
-    //        Vector3 pImpact = oldPosition + vImpact * tImpact;
-
-    //        Vector3 collisionNormal = (oldPosition - theSphere.transform.position).normalized;
-
-    //        Vector3 v1perp = perp_component(vImpact, collisionNormal);
-    //        Vector3 v2perp = perp_component(theSphere.velocity, collisionNormal);
-
-    //        float m1 = mass;
-    //        float m2 = theSphere.mass;
-
-    //        float resultantParallelVelocity1 = m1 - m2 / (m1 + m2) + (m2 * 2) / (m1 + m2);
-    //        float resultantParallelVelocity2 = m2 - m1 / (m1 + m2) + (m1 * 2) / (m1 + m2);
-    //        Vector3 resultantVelocity1 = getCoR() * (resultantParallelVelocity1 * collisionNormal) + v1perp;
-    //        Vector3 resultantVelocity2 = getCoR() * (resultantParallelVelocity2 * -collisionNormal) + v2perp;
-
-    //        float tRemaining = Time.deltaTime - tImpact;
-
-    //        Vector3 finalVelocity1 = resultantVelocity1 + acceleration * tRemaining;
-    //        Vector3 finalVelocity2 = resultantVelocity1 + acceleration * tRemaining;
-
-    //        // Position is only calculated for this sphere
-    //        Vector3 finalPosition1 = pImpact + finalVelocity1 * tRemaining;
-
-    //        this.velocity = resultantVelocity1;
-    //        theSphere.velocity = resultantVelocity2;
-
-    //        this.transform.position = finalPosition1;
-
-    //    }
-    //    d0sphere = d1;
-    //}
-
-    //void sphere_Collisions_oldNoToI()
-    //{
-    //    float sumOfRadii = Radius + theSphere.Radius;
-    //    float distance = Vector3.Distance(transform.position, theSphere.transform.position);
-
-    //    Vector3 collisionNormal = (transform.position - theSphere.transform.position).normalized;
-
-    //    if (distance < sumOfRadii)
-    //    {
-
-    //        Vector3 v1perp = perp_component(velocity, collisionNormal);
-    //        Vector3 v2perp = perp_component(theSphere.velocity, collisionNormal);
-
-    //        float m1 = mass;
-    //        float m2 = theSphere.mass;
-
-    //        float resultantParallelVelocity1 = m1 - m2 / (m1 + m2) + (m2 * 2) / (m1 + m2);
-    //        float resultantParallelVelocity2 = m2 - m1 / (m1 + m2) + (m1 * 2) / (m1 + m2);
-    //        Vector3 resultantVelocity1 = CoR * (resultantParallelVelocity1 * collisionNormal) + v1perp;
-    //        Vector3 resultantVelocity2 = CoR * (resultantParallelVelocity2 * -collisionNormal) + v2perp;
-
-    //        this.velocity = resultantVelocity1;
-    //        theSphere.velocity = resultantVelocity2;
-    //    }
-    //}
-
-    // Returns the magnitude of the parallel component of vector v parallel  to n
-    // v = Vector to be decomposed
-    // n = Unit vector parallel to above component
     float parallel_Distance(Vector3 v, Vector3 n)
     {
         return Vector3.Dot(v, n.normalized);
@@ -173,11 +80,11 @@ public class SpherePhysics : MonoBehaviour, ICollidable
         return v - parallel_component(v, n);
     }
 
-    public void resolve(ICollidable c/*, ref Vector3 newPosition, ref Vector3 newVelocity*/)
+    public void resolve(ICollidable c)
     {
       if (c is PlanePhysics)
         {
-            c.resolve(this/*, ref newPosition, ref newVelocity*/);
+            c.resolve(this);
         }
 
       else if(c is SpherePhysics otherSphere)
@@ -186,7 +93,7 @@ public class SpherePhysics : MonoBehaviour, ICollidable
             float d1 = Vector3.Distance(transform.position, otherSphere.transform.position) - sumOfRadii;
 
             float distanceAtToI = d1 - d0sphere;
-            float vMovement = d1 - d0sphere / Time.deltaTime; //movement between the two frames
+            float vMovement = d1 - d0sphere / Time.deltaTime;
             float tImpact = -d0sphere / vMovement;
 
             Vector3 vImpact = oldVelocity + acceleration * tImpact;
@@ -221,42 +128,4 @@ public class SpherePhysics : MonoBehaviour, ICollidable
             d0sphere = d1;
         }
     }
-    // Old Code
-    //float sumOfRadii = Radius + otherSphere.Radius;
-    //float d1 = Vector3.Distance(transform.position, otherSphere.transform.position) - sumOfRadii;
-
-    //float distanceAtToI = d1 - d0sphere;
-    //float vMovement = d1 - d0sphere / Time.deltaTime; //movement between the two frames
-    //float tImpact = -d0sphere / vMovement;
-
-    //Vector3 vImpact = oldVelocity + acceleration * tImpact;
-    //Vector3 pImpact = oldPosition + vImpact * tImpact;
-
-    //Vector3 collisionNormal = (oldPosition - otherSphere.transform.position).normalized;
-
-    //Vector3 v1perp = perp_component(vImpact, collisionNormal);
-    //Vector3 v2perp = perp_component(otherSphere.velocity, collisionNormal);
-
-    //float m1 = mass;
-    //float m2 = otherSphere.mass;
-
-    //float resultantParallelVelocity1 = m1 - m2 / (m1 + m2) + (m2 * 2) / (m1 + m2);
-    //float resultantParallelVelocity2 = m2 - m1 / (m1 + m2) + (m1 * 2) / (m1 + m2);
-    //Vector3 resultantVelocity1 = getCoR() * (resultantParallelVelocity1 * collisionNormal) + v1perp;
-    //Vector3 resultantVelocity2 = getCoR() * (resultantParallelVelocity2 * -collisionNormal) + v2perp;
-
-    //float tRemaining = Time.deltaTime - tImpact;
-
-    //Vector3 finalVelocity1 = resultantVelocity1 + acceleration * tRemaining;
-    //Vector3 finalVelocity2 = resultantVelocity1 + acceleration * tRemaining;
-
-    //// Position is only calculated for this sphere
-    //Vector3 finalPosition1 = pImpact + finalVelocity1 * tRemaining;
-
-    //        this.velocity = resultantVelocity1;
-    //        otherSphere.velocity = resultantVelocity2;
-
-    //        this.transform.position = finalPosition1;
-
-    //        d0sphere = d1;
 }

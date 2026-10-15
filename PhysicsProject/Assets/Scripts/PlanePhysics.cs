@@ -7,26 +7,15 @@ public class PlanePhysics : MonoBehaviour, ICollidable
         get { return transform.up; }
         set { transform.up = value; }
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+
+    public bool IsCollidingWithSphere { get; private set; }
 
     bool collidingWith(ICollidable c)
     {
-        // Simply detect IF it is a plane or sphere and IF it is colliding, physics calculations will be handled in PhysicsManagers this is purely detection
-        // Check if 'c' is an instance of PlanePhysics or SpherePhysics
         if (c is PlanePhysics)
             return false;
         SpherePhysics sphere = c as SpherePhysics;
         return PhysicsManager.parallel_Distance(sphere.transform.position - transform.position, Normal) - sphere.Radius < 0;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-       
     }
 
     bool ICollidable.collidingWith(ICollidable c)
@@ -34,20 +23,22 @@ public class PlanePhysics : MonoBehaviour, ICollidable
         return collidingWith(c);
     }
 
-    public void resolve(ICollidable c/*, ref Vector3 newPosition, ref Vector3 newVelocity*/)
+    public void resolve(ICollidable c)
     {
         if (c is SpherePhysics sphere)
         {
             float d1 = PhysicsManager.parallel_Distance(sphere.transform.position - transform.position, Normal) - sphere.Radius;
             if (d1 < 0)
             {
+                IsCollidingWithSphere = true;
+
                 Vector3 velocity = sphere.getVelocity();
 
                 Vector3 parallelComponent = PhysicsManager.parallel_component(velocity, Normal);
                 Vector3 perpendicularComponent = PhysicsManager.perp_component(velocity, Normal);
 
 
-                float vDrop = d1 - sphere.getd0() / Time.deltaTime; //removed parenthesis around d1 or d0
+                float vDrop = d1 - sphere.getd0() / Time.deltaTime;
 
                 float tImpact = -sphere.getd0() / vDrop;
 
@@ -57,7 +48,7 @@ public class PlanePhysics : MonoBehaviour, ICollidable
 
                 float tRemaining = Time.deltaTime - tImpact;
 
-                Vector3 v = vImpactOut + sphere.getAcceleration() * tRemaining; // v is velocity
+                Vector3 v = vImpactOut + sphere.getAcceleration() * tRemaining;
                 Vector3 position = pImpact + v * tRemaining;
 
                 sphere.setVelocity(v);
