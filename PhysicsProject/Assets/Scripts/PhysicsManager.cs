@@ -28,8 +28,6 @@ public class PhysicsManager : MonoBehaviour
               FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
                                        .OfType<ICollidable>()
                                        .ToList();
-
-        print(allCollidables.Count);
     }
 
     void Update()
