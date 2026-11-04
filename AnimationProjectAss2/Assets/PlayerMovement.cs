@@ -46,9 +46,14 @@ public class PlayerMovement : MonoBehaviour
 
             transform.position += direction * speed * Time.deltaTime;
 
-            // Slerp makes things rotate smoothly
             // Quaternion.Slerp(startRotation, targetRotation, t);
+            // Slerp makes things rotate smoothly
             // t = how quickly we should rotate from start to target
+
+            // A quaternion looks something like q = w + xi + yj +zk
+            // Complicated calculation unity uses to calculate rotations, ijk are imaginary dimensions
+            // transform.rotation for example is a quaternion
+
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 Quaternion.LookRotation(direction),
