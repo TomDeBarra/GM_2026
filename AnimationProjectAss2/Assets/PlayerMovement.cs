@@ -20,13 +20,11 @@ public class PlayerMovement : MonoBehaviour
         Keyboard keyboard = Keyboard.current;
         if (keyboard == null) return;
 
-        // Play pickup animation when E is pressed
         if (keyboard.eKey.wasPressedThisFrame)
         {
             animator.SetTrigger("Pickup");
         }
 
-        // WASD input
         float x = 0f;
         float z = 0f;
 
@@ -37,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 direction = new Vector3(x, 0, z).normalized;
 
+        // magnitude means length of vector, is it greater than 0?
         bool moving = direction.magnitude > 0;
         bool running = moving && keyboard.leftShiftKey.isPressed;
 
@@ -47,6 +46,9 @@ public class PlayerMovement : MonoBehaviour
 
             transform.position += direction * speed * Time.deltaTime;
 
+            // Slerp makes things rotate smoothly
+            // Quaternion.Slerp(startRotation, targetRotation, t);
+            // t = how quickly we should rotate from start to target
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 Quaternion.LookRotation(direction),
