@@ -1,8 +1,9 @@
 
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     public float walkSpeed = 2f;
     public float runSpeed = 5f;
@@ -17,6 +18,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (!IsOwner) return;
+
         Keyboard keyboard = Keyboard.current;
         if (keyboard == null) return;
 
