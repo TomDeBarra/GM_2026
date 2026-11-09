@@ -4,20 +4,22 @@ using UnityEngine;
 public class SnowballHandFollow : MonoBehaviour
 {
     private Transform hand;
+    private Transform lastParent;
 
     void LateUpdate()
     {
-        // Stop following once detached from player.
+        // Detect when the snowball changes owner/parent.
+        if (transform.parent != lastParent)
+        {
+            lastParent = transform.parent;
+            hand = null;
+        }
+
+        // If thrown, stop following any hand.
         if (transform.parent == null) return;
 
-        // Your existing hand-follow code below...
-
-        // Find the hand of the player we're attached to.
         if (hand == null)
         {
-            if (transform.parent == null)
-                return;
-
             Animator animator =
                 transform.parent.GetComponentInChildren<Animator>();
 
@@ -29,10 +31,7 @@ public class SnowballHandFollow : MonoBehaviour
             );
         }
 
-        // Keep the snowball at the hand's position.
         if (hand != null)
-        {
             transform.position = hand.position;
-        }
     }
 }
