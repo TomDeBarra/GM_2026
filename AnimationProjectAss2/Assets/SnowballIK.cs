@@ -15,7 +15,6 @@ public class SnowballIK : MonoBehaviour
     {
         animator = GetComponent<Animator>();
 
-        // Get the character's right arm bones
         upperArm = animator.GetBoneTransform(HumanBodyBones.RightUpperArm);
         lowerArm = animator.GetBoneTransform(HumanBodyBones.RightLowerArm);
         hand = animator.GetBoneTransform(HumanBodyBones.RightHand);
@@ -47,19 +46,15 @@ public class SnowballIK : MonoBehaviour
     {
         Vector3 toHand = hand.position - joint.position;
         Vector3 toTarget = snowball.position - joint.position;
-        // subtracting gives us a direction
 
         if (toHand.sqrMagnitude < 0.0001f ||
             toTarget.sqrMagnitude < 0.0001f)
             return;
-        // if joint (e.g. lower arm) is right next to hand somehow or is right next to snowball, then return
 
-        // Calculate rotation needed to aim the hand at the snowball
         Quaternion rotation = Quaternion.FromToRotation(
             toHand, toTarget
         );
 
-        // Multiply necessary rotation by current quaternion rotation of the joint
         joint.rotation = rotation * joint.rotation;
     }
 }

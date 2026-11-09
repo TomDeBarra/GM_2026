@@ -35,24 +35,14 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 direction = new Vector3(x, 0, z).normalized;
 
-        // magnitude means length of vector, is it greater than 0?
         bool moving = direction.magnitude > 0;
         bool running = moving && keyboard.leftShiftKey.isPressed;
 
-        // Movement and rotation
         if (moving)
         {
             float speed = running ? runSpeed : walkSpeed;
 
             transform.position += direction * speed * Time.deltaTime;
-
-            // Quaternion.Slerp(startRotation, targetRotation, t);
-            // Slerp makes things rotate smoothly
-            // t = how quickly we should rotate from start to target
-
-            // A quaternion looks something like q = w + xi + yj +zk
-            // Complicated calculation unity uses to calculate rotations, ijk are imaginary dimensions
-            // transform.rotation for example is a quaternion
 
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
@@ -61,7 +51,6 @@ public class PlayerMovement : MonoBehaviour
             );
         }
 
-        // Blend Tree animation
         float animationSpeed = 0f;
 
         if (moving)
