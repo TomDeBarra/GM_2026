@@ -14,7 +14,7 @@ public class SnowballSpawner : NetworkBehaviour
 
     private bool hasSpawned = false;
     private bool isPickingUp = false;
-    private NetworkObject spawnedSnowball;
+    private NetworkObject heldSnowball;
 
     void Update()
     {
@@ -33,7 +33,7 @@ public class SnowballSpawner : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void SpawnSnowballRpc()
     {
-        if (hasSpawned || spawnedSnowball != null ||
+        if (hasSpawned || heldSnowball != null ||
             snowballPrefab == null) return;
 
         GameObject snowball = Instantiate(snowballPrefab);
@@ -41,13 +41,14 @@ public class SnowballSpawner : NetworkBehaviour
         NetworkObject netObj =
             snowball.GetComponent<NetworkObject>();
 
-        netObj.Spawn();
+        netObj.Spawn(); // network manager will check prefab list and because it has a prefab list with snowballs it can spawn snowballs for everybody
 
-        if (netObj.TrySetParent(NetworkObject, false))
+        if (netObj.TrySetParent(NetworkObject, false)) // NetworkObject is the player prefab to which this script, snowball spawner is attached
         {
-            spawnedSnowball = netObj;
+            heldSnowball = netObj;
             hasSpawned = true;
         }
+        // Now script on snowball, find hand, will follow the hand of its new parent
         else
         {
             netObj.Despawn(true);
@@ -57,28 +58,28 @@ public class SnowballSpawner : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void ThrowSnowballRpc(Vector3 direction)
     {
-        if (spawnedSnowball == null) return;
+        if (heldSnowball == null) return;
 
-        if (!spawnedSnowball.TryRemoveParent(true))
+        if (!heldSnowball.TryRemoveParent(true))
             return;
 
         Rigidbody rb =
-            spawnedSnowball.GetComponent<Rigidbody>();
+            heldSnowball.GetComponent<Rigidbody>();
 
         rb.isKinematic = false;
         rb.useGravity = true;
 
         rb.AddForce(direction.normalized * throwForce,
-                    ForceMode.Impulse);
+                    ForceMode.Impulse); // AddForce must be passed in ForceMode as a second parameter, impulse means instantly apply the force, Force means over time like e.g. pushing
 
-        spawnedSnowball = null;
+        heldSnowball = null;
     }
 
     [Rpc(SendTo.Server)]
     private void PickupSnowballRpc()
     {
         // Cannot pick up another ball while holding one.
-        if (spawnedSnowball != null || isPickingUp)
+        if (heldSnowball != null || isPickingUp)
             return;
 
         StartCoroutine(PickupAfterDelay());
@@ -91,7 +92,7 @@ public class SnowballSpawner : NetworkBehaviour
         // Allow the pickup animation to play first.
         yield return new WaitForSeconds(pickupTime);
 
-        if (spawnedSnowball != null)
+        if (heldSnowball != null)
         {
             isPickingUp = false;
             yield break;
@@ -143,7 +144,7 @@ public class SnowballSpawner : NetworkBehaviour
                 rb.isKinematic = true;
                 rb.useGravity = false;
 
-                spawnedSnowball = nearest;
+                heldSnowball = nearest;
             }
         }
 
