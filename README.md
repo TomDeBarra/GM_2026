@@ -1,4 +1,5 @@
 These steps need to unfortunately be performed manually outside of the GitHub repo in order to perform MCP for assignment 4
+(The repo already includes a server.py, that is a Python server that will act as a middleman between Claude and Unity, so that step is already done)
 
 Run python -m pip install "mcp[cli]" flask
 in CMD
