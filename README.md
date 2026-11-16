@@ -19,7 +19,8 @@ In Claude you must change the config to include
       ]
     }
   }
-}```
+}
+```
 
 It might have a bunch of blabble in it so copy paste the entire .json and then ask ChatGPT where it should go
 
