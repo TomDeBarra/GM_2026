@@ -27,6 +27,8 @@ In Claude you must change the config to include
 }
 ```
 
+REPLACE "C:\\UnityMCP\\server.py" WITH THE GITHUB REPO PATH FOR server.py, E.G. "C:\\Users\\StudentDylanBarry(TL\\Desktop\\GM_2026\\UnityMCP\\server.py"
+
 It might have a bunch of blabble in it so copy paste the entire .json and then ask ChatGPT where it should go
 
 That is all that is necessary
