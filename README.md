@@ -2,6 +2,7 @@ These steps need to unfortunately be performed manually outside of the GitHub re
 (The repo already includes a server.py, that is a Python server that will act as a middleman between Claude and Unity, so that step is already done)
 
 Python MCP = Communicates with Grafana
+
 Flask (HTTP) = Communicates with Unity, basically a local server that starts up and then tells commands to Unity (move = true)
 
 Run python -m pip install "mcp[cli]" flask
