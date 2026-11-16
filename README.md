@@ -1,3 +1,24 @@
+These steps need to unfortunately be performed manually outside of the GitHub repo in order to perform MCP for assignment 4
+
 Run python -m pip install "mcp[cli]" flask
 in CMD
 
+Install Claude desktop
+
+In Claude you must change the config to include 
+(Go settings, desktop app, extensions, MCP server should bring you to .json file for configuration of Claude)
+
+{
+  "mcpServers": {
+    "unity": {
+      "command": "python",
+      "args": [
+        "C:\\UnityMCP\\server.py"
+      ]
+    }
+  }
+}
+
+It might have a bunch of blabble in it so copy paste the entire .json and then ask ChatGPT where it should go
+
+That is all that is necessary
