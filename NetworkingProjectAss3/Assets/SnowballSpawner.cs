@@ -4,7 +4,7 @@ using Unity.Netcode;
 using UnityEngine.InputSystem;
 using System.Collections;
 
-public class SnowballSpawner : NetworkBehaviour
+public class SnowballSpawner : NetworkBehaviour //implementing network behaviour is identical to monobehaviour but allows rpc calls etc...
 {
     [SerializeField] private GameObject snowballPrefab;
     [SerializeField] private float throwForce = 3f;
@@ -12,9 +12,10 @@ public class SnowballSpawner : NetworkBehaviour
     [SerializeField] private float pickupRange = 5f;
     [SerializeField] private float pickupTime = 1f;
 
-    private bool hasSpawned = false;
     private bool isPickingUp = false;
     private NetworkObject heldSnowball;
+
+    Color randomColour;
 
     void Update()
     {
@@ -30,10 +31,14 @@ public class SnowballSpawner : NetworkBehaviour
             PickupSnowballRpc();
     }
 
+    void Start()
+    {
+        randomColour = Random.ColorHSV(0f, 1f, 0.7f, 1f, 0.8f, 1f);
+    }
     [Rpc(SendTo.Server)]
     private void SpawnSnowballRpc()
     {
-        if (hasSpawned || heldSnowball != null ||
+        if (heldSnowball != null ||
             snowballPrefab == null) return;
 
         GameObject snowball = Instantiate(snowballPrefab);
@@ -43,16 +48,31 @@ public class SnowballSpawner : NetworkBehaviour
 
         netObj.Spawn(); // network manager will check prefab list and because it has a prefab list with snowballs it can spawn snowballs for everybody
 
+       
+
+        SetSnowballColourRpc(netObj, randomColour);
+
         if (netObj.TrySetParent(NetworkObject, false)) // NetworkObject is the player prefab to which this script, snowball spawner is attached
         {
             heldSnowball = netObj;
-            hasSpawned = true;
         }
         // Now script on snowball, find hand, will follow the hand of its new parent
         else
         {
             netObj.Despawn(true);
         }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void SetSnowballColourRpc(NetworkObjectReference snowballRef, Color colour)
+    {
+        if (!snowballRef.TryGet(out NetworkObject snowball))
+            return;
+
+        Renderer renderer = snowball.GetComponent<Renderer>();
+
+        if (renderer != null)
+            renderer.material.color = colour;
     }
 
     [Rpc(SendTo.Server)]
@@ -69,7 +89,7 @@ public class SnowballSpawner : NetworkBehaviour
         rb.isKinematic = false;
         rb.useGravity = true;
 
-        rb.AddForce(direction.normalized * throwForce,
+        rb.AddForce(direction.normalized * throwForce + Vector3.up * 3f, // vectorup * 3f adds 3y to the throw added to help prevent clipping through plane
                     ForceMode.Impulse); // AddForce must be passed in ForceMode as a second parameter, impulse means instantly apply the force, Force means over time like e.g. pushing
 
         heldSnowball = null;
@@ -78,7 +98,6 @@ public class SnowballSpawner : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void PickupSnowballRpc()
     {
-        // Cannot pick up another ball while holding one.
         if (heldSnowball != null || isPickingUp)
             return;
 
@@ -89,7 +108,6 @@ public class SnowballSpawner : NetworkBehaviour
     {
         isPickingUp = true;
 
-        // Allow the pickup animation to play first.
         yield return new WaitForSeconds(pickupTime);
 
         if (heldSnowball != null)
@@ -112,11 +130,9 @@ public class SnowballSpawner : NetworkBehaviour
             if (ball == null || !ball.IsSpawned)
                 continue;
 
-            // Only consider snowballs.
             if (ball.GetComponent<SnowballHandFollow>() == null)
                 continue;
 
-            // Ignore snowballs already held by players.
             if (ball.transform.parent != null)
                 continue;
 
@@ -133,7 +149,6 @@ public class SnowballSpawner : NetworkBehaviour
 
         if (nearest != null)
         {
-            // Attach this snowball to the new player.
             if (nearest.TrySetParent(NetworkObject, false))
             {
                 Rigidbody rb =

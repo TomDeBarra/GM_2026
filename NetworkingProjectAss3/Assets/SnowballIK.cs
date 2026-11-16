@@ -1,4 +1,6 @@
 
+// I'm aware this isn't being used in assignment 3 at present, however I kept it here incase I'm told assignment 3 needs to carry over kinematics from assignment 2
+
 using UnityEngine;
 
 public class SnowballIK : MonoBehaviour
