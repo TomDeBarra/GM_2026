@@ -10,7 +10,7 @@ In Claude you must change the config to include
 
 <img width="1090" height="837" alt="image" src="https://github.com/user-attachments/assets/d39ae775-ffd9-4ca0-87ed-281b1f484746" />
 
-{
+```{
   "mcpServers": {
     "unity": {
       "command": "python",
@@ -19,7 +19,7 @@ In Claude you must change the config to include
       ]
     }
   }
-}
+}```
 
 It might have a bunch of blabble in it so copy paste the entire .json and then ask ChatGPT where it should go
 
