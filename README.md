@@ -8,6 +8,8 @@ Install Claude desktop
 In Claude you must change the config to include 
 (Go settings, desktop app, extensions, MCP server should bring you to .json file for configuration of Claude)
 
+<img width="1090" height="837" alt="image" src="https://github.com/user-attachments/assets/d39ae775-ffd9-4ca0-87ed-281b1f484746" />
+
 {
   "mcpServers": {
     "unity": {
