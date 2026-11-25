@@ -1,5 +1,5 @@
 from mcp.server.mcpserver import MCPServer
-from mcp import client
+from mcp import Client
 from flask import Flask, jsonify, request
 from threading import Thread
 from queue import Queue, Empty
