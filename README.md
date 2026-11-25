@@ -10,7 +10,7 @@ The project already contains the required code:
 - **`MCPController.cs`** — Receives movement commands from the local Python server.
 - **`UnityMCP/server.py`** — Runs the MCP server for Claude and the Flask HTTP server used by Unity.
 
-**You do not need to rewrite these scripts.** Follow the setup steps below on your own computer.
+**However you must do the following steps on your own computer as they are impossible to include in the repo.**
 
 ## 2. Install Python dependencies
 
