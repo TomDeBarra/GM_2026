@@ -14,7 +14,7 @@ The project already contains the required code:
 
 ## 2. Install Python dependencies
 
-Make sure [Python](https://www.python.org/downloads/) is installed. Then open **Command Prompt (CMD)** and run:
+Make sure [Python](https://www.python.org/downloads/) is installed. It already is on college PCs. Then open **Command Prompt (CMD)** and run:
 
 ```cmd
 python -m pip install "mcp[cli]" flask
@@ -82,13 +82,13 @@ In Claude Desktop, enter:
 
 > **Use the `move_forward` tool.**
 
-Using the exact tool name makes it easier for Claude to select the correct MCP tool.
+From past experience using MCP tools it often doesn't work at all unless you mention the specific name of the MCP tool it should use like this.
 
 **Expected result:** Claude invokes the tool, and the Unity player moves forward for **5 seconds** using the project's existing movement and animation code.
 
 ## Troubleshooting
 
-- **`unity couldn't start`** — Check Claude's MCP server logs. Confirm that Python and the dependencies are installed and that the configured `server.py` path is correct.
+- **`unity couldn't start` in Claude** — Confirm that Python and the dependencies are installed (You probably did not enter the CMD line stated at the beginning of this .md which installs MCP and flask for Python) and that the configured `server.py` path is correct.
 - **Claude cannot find `move_forward`** — Check that the `unity` MCP server appears as connected in Claude Desktop, and restart Claude after changing the configuration.
 - **Claude calls the tool, but nothing moves** — Check that Unity is in Play mode, `SampleScene` is loaded, and the player has the `MCPController` and `PlayerMovement` scripts attached.
 - **JSON configuration error** — Check for missing commas, missing closing braces, and single backslashes in Windows file paths.
