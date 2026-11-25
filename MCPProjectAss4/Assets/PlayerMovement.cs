@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     public float walkSpeed = 2f;
     public float runSpeed = 5f;
     public float turnSpeed = 10f;
+    public bool aiMoveForward = false;
 
     private Animator animator;
 
@@ -28,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
         float x = 0f;
         float z = 0f;
 
-        if (keyboard.wKey.isPressed) z += 1f;
+        if (keyboard.wKey.isPressed || aiMoveForward) z += 1f;
         if (keyboard.sKey.isPressed) z -= 1f;
         if (keyboard.aKey.isPressed) x -= 1f;
         if (keyboard.dKey.isPressed) x += 1f;

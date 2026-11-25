@@ -733,6 +733,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 66853ed4df2ec5e498155650e7eafc56, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2079611298}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 66853ed4df2ec5e498155650e7eafc56, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2079611299}
   m_SourcePrefab: {fileID: 100100000, guid: 66853ed4df2ec5e498155650e7eafc56, type: 3}
 --- !u!1 &2079611288 stripped
 GameObject:
@@ -788,6 +791,7 @@ MonoBehaviour:
   walkSpeed: 2
   runSpeed: 5
   turnSpeed: 10
+  aiMoveForward: 0
 --- !u!114 &2079611294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -925,6 +929,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SnowballIK
   snowball: {fileID: 305285639}
+--- !u!114 &2079611299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2079611288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dca2280a0ffebe4ea35890ce16f7174, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MCPController
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
